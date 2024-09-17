@@ -1,9 +1,23 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-function Label({label}) {
+/**
+ * Componente de etiqueta para campos de formulario.
+ *
+ * @param {string} label - El texto que se mostrará en la etiqueta.
+ * @returns {JSX.Element} El componente de etiqueta renderizado.
+ */
+function Label({ label }) {
   return (
-    <label for="Offer" class="mb-1 text-sm font-medium leading-6 text-gray-600">{label}</label>
-  )
+    <label htmlFor="Offer" className="mb-1 text-sm font-medium leading-6 text-gray-600">
+      {label}
+    </label>
+  );
 }
 
-export default Label
+// Definición de PropTypes para el componente Label
+Label.propTypes = {
+  label: PropTypes.string.isRequired, // label es requerido y debe ser una cadena de texto
+};
+
+export default Label;

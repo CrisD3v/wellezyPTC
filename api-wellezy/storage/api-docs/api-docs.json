@@ -1,0 +1,637 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Wellezy",
+        "description": "Esta es la documentación de la API de Wellezy.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/"
+        },
+        {
+            "url": "http://localhost"
+        }
+    ],
+    "paths": {
+        "/api/airports/{code}": {
+            "post": {
+                "tags": [
+                    "Airports"
+                ],
+                "summary": "Busca aeropuertos por el nombre de la ciudad.",
+                "description": "Obtiene información de aeropuertos según el código de ciudad proporcionado.",
+                "operationId": "480f90aa698cba7b4edd97425a83cf78",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Nombre de la ciudad para buscar aeropuertos",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Medellin"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Nombre de la ciudad",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "Medellin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Aeropuertos encontrados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "number",
+                                                "example": 1
+                                            },
+                                            "city": {
+                                                "type": "string",
+                                                "example": "Medellin"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Enrique Olaya Herrera"
+                                            },
+                                            "country": {
+                                                "type": "string",
+                                                "example": "Colombia"
+                                            },
+                                            "iata": {
+                                                "type": "string",
+                                                "example": "EOH"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "example": "2023-08-30T14:37:13.000000Z"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "example": "2023-08-30T14:37:13.000000Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron aeropuertos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No airports found in this city"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error en la solicitud",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error fetching data: [detalle del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/flights": {
+            "post": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Busca vuelos según criterios proporcionados",
+                "description": "Busca vuelos basados en la ciudad de salida, llegada, número de pasajeros y hora de salida.",
+                "operationId": "ea47c22ac381c72c304eff4cbb63f3ed",
+                "requestBody": {
+                    "description": "Datos para buscar vuelos",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "searchs": {
+                                        "type": "integer",
+                                        "example": 250
+                                    },
+                                    "qtyPassengers": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "adult": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "itinerary": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "departureCity": {
+                                                    "type": "string",
+                                                    "example": "mde"
+                                                },
+                                                "arrivalCity": {
+                                                    "type": "string",
+                                                    "example": "lhr"
+                                                },
+                                                "hour": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-10-09T00:00:00+0000"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vuelos encontrados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "dateOfDeparture": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2024-02-09"
+                                            },
+                                            "timeOfDeparture": {
+                                                "type": "string",
+                                                "example": "08:00"
+                                            },
+                                            "dateOfArrival": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2024-02-09"
+                                            },
+                                            "timeOfArrival": {
+                                                "type": "string",
+                                                "example": "10:00"
+                                            },
+                                            "marketingCarrier": {
+                                                "type": "string",
+                                                "example": "AV"
+                                            },
+                                            "flightOrtrainNumber": {
+                                                "type": "string",
+                                                "example": "AV123"
+                                            },
+                                            "locationId": {
+                                                "properties": {
+                                                    "departureCity": {
+                                                        "type": "string",
+                                                        "example": "MDE"
+                                                    },
+                                                    "arrivalCity": {
+                                                        "type": "string",
+                                                        "example": "LHR"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error en la solicitud",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error fetching data: [detalle del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/reserves/{id_user}": {
+            "post": {
+                "tags": [
+                    "Reserves"
+                ],
+                "summary": "Crea una reserva para un usuario con información de itinerarios",
+                "description": "Este endpoint crea una reserva de vuelo asociada a un usuario y guarda los itinerarios proporcionados.",
+                "operationId": "7efb651738a4f66134c319bf6c002097",
+                "parameters": [
+                    {
+                        "name": "id_user",
+                        "in": "path",
+                        "description": "ID del usuario para el que se crea la reserva",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos necesarios para crear la reserva y los itinerarios",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "locationName": {
+                                        "type": "string",
+                                        "example": "Alfonso B. Aragon"
+                                    },
+                                    "dateOfDeparture": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-10-15"
+                                    },
+                                    "timeOfDeparture": {
+                                        "type": "string",
+                                        "example": "08:00"
+                                    },
+                                    "itineraries": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "origin": {
+                                                    "type": "string",
+                                                    "example": "MDE"
+                                                },
+                                                "destination": {
+                                                    "type": "string",
+                                                    "example": "BOG"
+                                                },
+                                                "departure_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-10-15"
+                                                },
+                                                "arrival_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-10-15"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reserva y itinerarios creados correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reservation and itineraries saved correctly."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "locationId": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The locationName field is required."
+                                                    }
+                                                },
+                                                "itineraries.0.origin": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The origin field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error creating reservation: [detalle del error]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registro de usuario",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Inicio de sesión",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Obtener usuario autenticado",
+                "operationId": "31234491f21a35d2de09d4fae7ee13c4",
+                "responses": {
+                    "200": {
+                        "description": "Authenticated user data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john.doe@example.com"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Cerrar sesión",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Airports",
+            "description": "Airports"
+        },
+        {
+            "name": "Flights",
+            "description": "Flights"
+        },
+        {
+            "name": "Reserves",
+            "description": "Reserves"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        }
+    ]
+}

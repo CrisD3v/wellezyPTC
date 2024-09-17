@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,13 +16,20 @@ use App\Http\Controllers\ApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Rutas para la autenticación del usuario (públicas)
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+// Rutas protegidas (requieren autenticación con JWT)
+Route::middleware('auth:api')->group(function () {
+    Route::post('/airports/{city}', [ApiController::class, 'airports']);
+    Route::post('/flights', [ApiController::class, 'flights']);
+    Route::post('/reserves/{id_user}', [ApiController::class, 'reserves']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'getUser']);
 });
-
-
-
-// Define una ruta que apunte al método 'airports' en ApiController
-Route::post('/airports/{city}', [ApiController::class, 'airports']);
-Route::post('/flights', [ApiController::class, 'flights']);
 
