@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TableRow from '../atoms/TableRow';
 import TableCell from '../atoms/TableCell';
+import Button from '../atoms/Button';
+import { useReservesMutation, useUserDataQuery } from '../../redux/services/ApiServices';
 
 /**
  * Componente que renderiza el cuerpo de una tabla de vuelos.
@@ -58,6 +60,47 @@ function TableBody({
   // Obtener los segmentos filtrados para la página actual
   const currentSegments = filteredSegments.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
+  // Estado para manejar el estado de carga y error
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
+
+  // Llamada al hook para obtener datos del usuario
+  const { data:dataUser, isLoading, isError, error } = useUserDataQuery();
+
+  // Hook para la mutación de reservas
+  const [reservesUser] = useReservesMutation();
+
+  // Función para reservar un vuelo
+  const handleSubmit = async (e, dataPosition) => {
+    e.preventDefault();
+    setLoading(true);
+    setApiError('');
+
+    const bodyRequest = {
+      locationName: currentSegments[dataPosition].location[1]?.locationName,
+      dateOfDeparture: currentSegments[dataPosition].productDateTime?.dateOfDeparture,
+      timeOfDeparture: currentSegments[dataPosition].productDateTime?.timeOfDeparture,
+      itineraries: [
+        {
+          origin: currentSegments[dataPosition].location[0]?.locationId,
+          destination: currentSegments[dataPosition].location[1]?.locationId,
+          departure_date: currentSegments[dataPosition].productDateTime?.dateOfDeparture,
+          arrival_date: currentSegments[dataPosition].productDateTime?.dateOfArrival
+        }
+      ]
+    }
+
+
+    try {
+      const response = await reservesUser({ body: bodyRequest, id_user:dataUser.id});
+      console.log('Reserva exitosa:', response);
+    } catch (error) {
+      console.error('Error reservando el vuelo:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <tbody>
       {currentSegments.length > 0 ? (
@@ -87,7 +130,11 @@ function TableBody({
               </div>
             </TableCell>
             <TableCell><p className='text-xl font-bold text-slate-300'>{el.flightOrtrainNumber}</p></TableCell>
-            <TableCell><button className='p-4 bg-orange-400 text-white font-bold rounded-xl'>Reservar</button></TableCell>
+            <TableCell>
+              <form onSubmit={(e) => handleSubmit(e, index)}>
+                <Button label={'Reservar'} customClass={'p-4 bg-orange-400 text-white font-bold rounded-xl'} />
+              </form>
+            </TableCell>
           </TableRow>
         ))
       ) : (

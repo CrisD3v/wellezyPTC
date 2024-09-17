@@ -92,7 +92,7 @@ function LoginForm() {
             const response = await loginUser(formData).unwrap();
 
             // Guardar token en cookies y en el estado de Redux
-            setCookie('authToken', response?.token, { path: '/home' });
+            setCookie('authToken', response?.token);
             dispatch(setToken(response?.token));
             navigate('/home'); // Redirigir a /home
         } catch (error) {

@@ -15,8 +15,9 @@ import { FaUser } from 'react-icons/fa';
 function User({ ...props }) {
     return (
         // Contenedor principal con clases de estilo y propagación de props adicionales
-        <div 
-            className='rounded-full border h-10 w-10 flex items-center justify-center bg-purple-400 shadow-lg cursor-pointer' 
+        <div
+            className='rounded-full border h-10 w-10 flex items-center justify-center bg-purple-400 shadow-lg cursor-pointer'
+            data-testid="user-icon"
             {...props}
         >
             {/* Ícono de usuario usando react-icons */}

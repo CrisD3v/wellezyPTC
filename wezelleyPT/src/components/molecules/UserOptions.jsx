@@ -3,6 +3,7 @@ import { useUserLogoutMutation } from '../../redux/services/ApiServices';
 import { useCookies } from 'react-cookie';
 import { setOpenUserMenu, setOpenDropDownMenu, setOpenDropDownSearch } from '../../redux/slices/menuSlice';
 import { useDispatch } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 /**
@@ -21,6 +22,11 @@ import PropTypes from 'prop-types';
  */
 function UserOptions() {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const path = location.pathname;
+
+    // Eliminar la barra diagonal al principio de la ruta
+    const pathData = path.replace(/^\//, '');
 
     // Hooks para la mutación de cierre de sesión y gestión de cookies
     const [cookies, setCookie, removeCookie] = useCookies(['authToken']);
@@ -59,16 +65,41 @@ function UserOptions() {
         }
     };
 
+    // Definición de los enlace
+    const listRedirect = {
+        reserves: [
+            {
+                path: '/home',
+                label: 'Inicio'
+            }
+        ],
+        home: [
+            {
+                path: '/reserves',
+                label: 'Reservas'
+            }
+        ]
+    }
+
     return (
-        <form onSubmit={handleSubmit} className='flex justify-center w-full'>
-            <button 
-                className='w-full text-sm font-bold cursor-pointer hover:bg-purple-400 hover:text-white p-4 rounded-lg transition-all ease-in-out duration-300' 
-                disabled={loading}
-            >
-                {loading ? 'Cerrando sesión...' : 'Cerrar sesión'}
-            </button>
-            {apiError && <p className="text-red-500 mt-2">{apiError}</p>}
-        </form>
+        <div className='flex justify-center flex-col w-full gap-1'>
+            {listRedirect[pathData].map((item, index) => (
+                <Link key={index}
+                    to={item.path}
+                    className='text-center w-full text-sm font-bold cursor-pointer hover:bg-purple-400 hover:text-white p-4 rounded-lg transition-all ease-in-out duration-300'
+                >
+                    {item.label}
+                </Link>
+            ))}
+            <form onSubmit={handleSubmit}>
+                <button
+                    className='w-full text-sm font-bold cursor-pointer hover:bg-purple-400 hover:text-white p-4 rounded-lg transition-all ease-in-out duration-300'
+                    disabled={loading}
+                >
+                    {loading ? 'Cerrando sesión...' : 'Cerrar sesión'}
+                </button>
+            </form>
+        </div>
     );
 }
 

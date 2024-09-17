@@ -160,7 +160,7 @@ function SearchForm() {
                         </div>
                     </div>
                     <div className="ml-2">
-                        <User onClick={handleOpenUserMenu}/>
+                        <User  onClick={handleOpenUserMenu}/>
                     </div>
                 </div>
             </form>

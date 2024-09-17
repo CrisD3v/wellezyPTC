@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import LandingPage from './components/pages/LandingPage';
 import { CookiesProvider } from 'react-cookie'; // Proveedor de cookies para toda la aplicación
 import PrivateRoute from './components/templates/PrivateRoutes';
+import ReservesPage from './components/pages/ReservesPage';
 
 /**
  * Componente principal de la aplicación que define las rutas
@@ -22,9 +23,10 @@ function App() {
         <Routes>
           {/* Ruta pública: Página de inicio (Landing) */}
           <Route exact path="/" element={<LandingPage />} />
-          
-          {/* Ruta privada: Home, envuelta con PrivateRoute para requerir autenticación */}
+
+          {/* Rutas privadas: [Home, Reserves], envueltas con PrivateRoute para requerir autenticación */}
           <Route exact path="/home" element={<PrivateRoute component={HomePage} />} />
+          <Route exact path="/reserves" element={<ReservesPage />} />
         </Routes>
       </CookiesProvider>
     </div>

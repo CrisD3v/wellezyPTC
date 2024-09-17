@@ -5,21 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class itineraries extends Model
+class Itinerary extends Model
 {
     use HasFactory;
-    
+
+    protected $table = 'itineraries';
+
     protected $fillable = [
-        'reserve_id',
+        'reserve_id', // Clave foránea que conecta con la tabla reserves
         'origin',
         'destination',
         'departure_date',
         'arrival_date',
     ];
 
-    // Define la relación con el modelo Reserve
+    // Define la relación inversa con el modelo Reserve
     public function reserve()
     {
-        return $this->belongsTo(reserves::class);
+        return $this->belongsTo(Reserves::class);
     }
 }

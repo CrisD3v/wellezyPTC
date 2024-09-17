@@ -268,67 +268,82 @@
                 ]
             }
         },
-        "/api/reserves/{id_user}": {
+        "/reserves/{id_user}": {
             "post": {
                 "tags": [
-                    "Reserves"
+                    "Reservas"
                 ],
-                "summary": "Crea una reserva para un usuario con información de itinerarios",
-                "description": "Este endpoint crea una reserva de vuelo asociada a un usuario y guarda los itinerarios proporcionados.",
-                "operationId": "7efb651738a4f66134c319bf6c002097",
+                "summary": "Crear una nueva reserva",
+                "description": "Crea una nueva reserva con la información proporcionada y los itinerarios asociados.",
+                "operationId": "fdcf9e31b7cd8fd8a2d44e0534aded35",
                 "parameters": [
                     {
                         "name": "id_user",
                         "in": "path",
-                        "description": "ID del usuario para el que se crea la reserva",
+                        "description": "ID del usuario que realiza la reserva",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "example": 123
+                            "type": "integer"
                         }
                     }
                 ],
                 "requestBody": {
-                    "description": "Datos necesarios para crear la reserva y los itinerarios",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "locationName",
+                                    "dateOfDeparture",
+                                    "timeOfDeparture",
+                                    "itineraries"
+                                ],
                                 "properties": {
                                     "locationName": {
+                                        "description": "Nombre de la ubicación de la reserva",
                                         "type": "string",
-                                        "example": "Alfonso B. Aragon"
+                                        "example": "Eldorado"
                                     },
                                     "dateOfDeparture": {
+                                        "description": "Fecha de salida de la reserva",
                                         "type": "string",
-                                        "format": "date",
-                                        "example": "2024-10-15"
+                                        "format": "date"
                                     },
                                     "timeOfDeparture": {
+                                        "description": "Hora de salida de la reserva",
                                         "type": "string",
-                                        "example": "08:00"
+                                        "example": "10:00"
                                     },
                                     "itineraries": {
+                                        "description": "Lista de itinerarios asociados a la reserva",
                                         "type": "array",
                                         "items": {
+                                            "required": [
+                                                "origin",
+                                                "destination",
+                                                "departure_date",
+                                                "arrival_date"
+                                            ],
                                             "properties": {
                                                 "origin": {
+                                                    "description": "Lugar de origen del itinerario",
                                                     "type": "string",
                                                     "example": "MDE"
                                                 },
                                                 "destination": {
+                                                    "description": "Destino del itinerario",
                                                     "type": "string",
-                                                    "example": "BOG"
+                                                    "example": "CLO"
                                                 },
                                                 "departure_date": {
+                                                    "description": "Fecha de salida del itinerario",
                                                     "type": "string",
-                                                    "format": "date",
-                                                    "example": "2024-10-15"
+                                                    "format": "date"
                                                 },
                                                 "arrival_date": {
+                                                    "description": "Fecha de llegada del itinerario",
                                                     "type": "string",
-                                                    "format": "date",
-                                                    "example": "2024-10-15"
+                                                    "format": "date"
                                                 }
                                             },
                                             "type": "object"
@@ -342,14 +357,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Reserva y itinerarios creados correctamente",
+                        "description": "Reserva creada con éxito",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Reservation and itineraries saved correctly."
+                                            "example": "Reserva creada con éxito"
                                         }
                                     },
                                     "type": "object"
@@ -357,50 +372,111 @@
                             }
                         }
                     },
-                    "422": {
-                        "description": "Error de validación",
+                    "400": {
+                        "description": "Solicitud inválida",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "The given data was invalid."
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "locationId": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The locationName field is required."
-                                                    }
-                                                },
-                                                "itineraries.0.origin": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The origin field is required."
-                                                    }
-                                                }
+                                            "example": "Los datos de entrada son incorrectos"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/reserves": {
+            "get": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Obtener itinerarios de reservas del usuario actual",
+                "description": "Recupera todas las reservas del usuario autenticado junto con sus itinerarios asociados.",
+                "operationId": "9ff6fdedafe5dc61706b2fc7ae99a842",
+                "responses": {
+                    "200": {
+                        "description": "Lista de reservas con itinerarios del usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID de la reserva",
+                                                "type": "integer"
                                             },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                            "locationName": {
+                                                "description": "Nombre de la ubicación de la reserva",
+                                                "type": "string",
+                                                "example": "Eldorado"
+                                            },
+                                            "dateOfDeparture": {
+                                                "description": "Fecha de salida de la reserva",
+                                                "type": "string",
+                                                "format": "date"
+                                            },
+                                            "timeOfDeparture": {
+                                                "description": "Hora de salida de la reserva",
+                                                "type": "string",
+                                                "example": "10:00"
+                                            },
+                                            "itineraries": {
+                                                "description": "Lista de itinerarios asociados a la reserva",
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "origin": {
+                                                            "description": "Lugar de origen del itinerario",
+                                                            "type": "string",
+                                                            "example": "MDE"
+                                                        },
+                                                        "destination": {
+                                                            "description": "Destino del itinerario",
+                                                            "type": "string",
+                                                            "example": "CLO"
+                                                        },
+                                                        "departure_date": {
+                                                            "description": "Fecha de salida del itinerario",
+                                                            "type": "string",
+                                                            "format": "date"
+                                                        },
+                                                        "arrival_date": {
+                                                            "description": "Fecha de llegada del itinerario",
+                                                            "type": "string",
+                                                            "format": "date"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Error interno del servidor",
+                    "401": {
+                        "description": "No autorizado, el usuario no está autenticado",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Error creating reservation: [detalle del error]"
+                                            "example": "No autorizado"
                                         }
                                     },
                                     "type": "object"
@@ -613,6 +689,12 @@
                 "type": "http",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
+            },
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     },
@@ -626,8 +708,8 @@
             "description": "Flights"
         },
         {
-            "name": "Reserves",
-            "description": "Reserves"
+            "name": "Reservas",
+            "description": "Reservas"
         },
         {
             "name": "Auth",

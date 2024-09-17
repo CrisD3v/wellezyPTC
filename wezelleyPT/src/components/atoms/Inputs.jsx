@@ -21,8 +21,8 @@ function Inputs({
   containerClass = '',
   label = '',
   labelPosition = 'L',
-  id = '',
   errorMessage = '',
+  inputId = '',
   ...props // Para aceptar propiedades adicionales
 }) {
   // Clases y configuraciones según el tipo de input
@@ -40,18 +40,18 @@ function Inputs({
   return (
     <div className={`flex ${labelPosition === 'L' ? 'flex-row' : labelPosition === 'R' ? 'flex-row items-center' : 'flex-col'} ${containerClass}`}>
       {label && (labelPosition === 'T' || labelPosition === 'L') && (
-        <Label label={label} />
+        <Label htmlFor={inputId} label={label} />
       )}
 
       <input
-        id={id}
+        id={inputId}
         type={type}
         className={`${inputClasses[type] || ''} ${errorMessage ? 'border-red-500' : ''}`}
         {...props} // Pasar propiedades adicionales aquí
       />
 
       {label && (labelPosition === 'R' || labelPosition === 'B') && (
-        <Label label={label} />
+        <Label label={label} htmlFor={inputId} />
       )}
 
       {errorMessage && (
@@ -66,6 +66,7 @@ Inputs.propTypes = {
   type: PropTypes.oneOf(['text', 'number', 'checkbox', 'date', 'password', 'email', 'time','hidden']).isRequired, // type es requerido y debe ser uno de los valores especificados
   customClass: PropTypes.string, // customClass es opcional y debe ser una cadena de texto
   containerClass: PropTypes.string, // containerClass es opcional y debe ser una cadena de texto
+  inputId: PropTypes.string, // el id es opcional y debe ser una cadena de texto
   label: PropTypes.string, // label es opcional y debe ser una cadena de texto
   labelPosition: PropTypes.oneOf(['T', 'L', 'R', 'B']), // labelPosition es opcional y debe ser uno de los valores especificados
   errorMessage: PropTypes.string, // errorMessage es opcional y debe ser una cadena de texto

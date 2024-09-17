@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
  */
 function Loader() {
   return (
-    <div className="flex justify-center items-center h-full">
-      <div className="w-16 h-16 border-4 border-purple-500 border-dashed rounded-full animate-spin"></div>
+    <div className="flex justify-center items-center h-full" data-testid="loader-container">
+      <div className="w-16 h-16 border-4 border-purple-500 border-dashed rounded-full animate-spin"  data-testid="loader-spinner"></div>
     </div>
   );
 }

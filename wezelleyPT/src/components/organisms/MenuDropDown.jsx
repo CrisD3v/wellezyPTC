@@ -13,12 +13,13 @@ import UserOptions from '../molecules/UserOptions';
  * @component
  * @param {string} type - Tipo de menú desplegable. Puede ser `'passenger'` o `'search'`.
  * @param {boolean} open - Controla si el menú desplegable está visible o oculto.
+ * @param {string} customClass - clases personalizables.
  * @example
  * return (
  *   <MenuDropDown type='passenger' open={true} />
  * );
  */
-function MenuDropDown({ type, open }) {
+function MenuDropDown({ type, open , customClass}) {
   const adultsPassenger = useSelector(state => state.counter.adults);
   const kidsPassenger = useSelector(state => state.counter.kids);
   const items = [
@@ -29,11 +30,11 @@ function MenuDropDown({ type, open }) {
   const typeDropDown = {
     passenger: 'lg:right-[20rem] lg:top-[6.5rem] xl:right-[15%]',
     search: 'lg:right-[20rem] lg:top-[6.5rem] xl:right-[46%]',
-    user: 'lg:right-[10rem] lg:top-[3.8rem] xl:right-[12%] w-[15rem]',
+    user: 'lg:right-[10rem] lg:top-[3.8rem] xl:right-[12%] w-[15rem] p-1',
   };
 
   return (
-    <div className={`border shadow-lg w-96 h-34 rounded-xl p-7 bg-white z-50 absolute top-[10vh] ${typeDropDown[type]} ${open ? 'block' : 'hidden'}`}>
+    <div className={`border shadow-lg w-96 h-34 rounded-xl p-7 bg-white z-50 absolute top-[10vh] ${typeDropDown[type]} ${open ? 'block' : 'hidden'} ${customClass}`}>
       {type === 'passenger' ? <MenuList items={items} /> : type === 'search' ? <SearchSelect /> : <UserOptions/>}
     </div>
   );
@@ -42,7 +43,8 @@ function MenuDropDown({ type, open }) {
 // Definición de PropTypes para el componente MenuDropDown
 MenuDropDown.propTypes = {
   type: PropTypes.oneOf(['passenger', 'search','user']).isRequired,
-  open: PropTypes.bool.isRequired
+  open: PropTypes.bool.isRequired,
+  customClass: PropTypes.string
 };
 
 export default MenuDropDown;

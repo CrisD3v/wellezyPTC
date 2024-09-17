@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class reserves extends Model
+class Reserves extends Model
 {
     use HasFactory;
+
+    // Define la tabla
+    protected $table = 'reserves';
 
     protected $fillable = [
         'id_user',
@@ -19,6 +22,6 @@ class reserves extends Model
     // Define la relación con el modelo Itinerary
     public function itineraries()
     {
-        return $this->hasMany(itineraries::class);
+        return $this->hasMany(Itinerary::class, 'reserve_id');
     }
 }

@@ -29,6 +29,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/airports/{city}', [ApiController::class, 'airports']);
     Route::post('/flights', [ApiController::class, 'flights']);
     Route::post('/reserves/{id_user}', [ApiController::class, 'reserves']);
+    Route::get('/reserves', [ApiController::class, 'get_Reserves_Itineraries']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'getUser']);
 });

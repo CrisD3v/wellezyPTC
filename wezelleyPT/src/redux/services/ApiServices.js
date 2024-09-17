@@ -57,7 +57,13 @@ export const wellezyApi = createApi({
                 method: 'POST',
             }),
         }),
+        userData: builder.query({
+            query: () => '/user',
+        }),
+        userReserves: builder.query({
+            query: () => '/reserves',
+        }),
     }),
 })
 
-export const { useSearchFlightsMutation, useSearchAirportsMutation, useUserRegisterMutation, useUserLoginMutation, useUserLogoutMutation, useReservesMutation } = wellezyApi;
+export const { useSearchFlightsMutation, useSearchAirportsMutation, useUserRegisterMutation, useUserLoginMutation, useUserLogoutMutation, useReservesMutation, useUserDataQuery, useUserReservesQuery } = wellezyApi;

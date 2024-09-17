@@ -108,7 +108,7 @@ function SignUpForm() {
             const response = await registerUser(formData).unwrap();
 
             // Guardar token en cookies
-            setCookie('authToken', response?.token, { path: '/home' });
+            setCookie('authToken', response?.token);
             dispatch(setToken(response?.token));
             navigate('/home'); // Redirigir a /home
         } catch (error) {

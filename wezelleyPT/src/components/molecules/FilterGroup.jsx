@@ -67,6 +67,7 @@ function FilterGroup() {
         {airlines.map((airline, index) => (
           <Inputs
             key={index}
+            inputId={'airline-' + index}
             type="checkbox"
             label={airline}
             value={airline}
@@ -79,7 +80,7 @@ function FilterGroup() {
       </div>
       <p className="mb-3 text-sm font-medium leading-6 text-black">Hora de salida</p>
       <div className="box flex flex-col gap-2 mb-4">
-        <Inputs type='time' customClass='border p-2 rounded-md' value={departureTime} onChange={handleDepartureTimeChange} />
+        <Inputs type='time'  customClass='border p-2 rounded-md' value={departureTime} onChange={handleDepartureTimeChange} />
       </div>
 
       <p className="mb-3 text-sm font-medium leading-6 text-black">Fecha de llegada</p>

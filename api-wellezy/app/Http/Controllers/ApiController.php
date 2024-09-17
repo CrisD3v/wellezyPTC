@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use app\Models\Itiner;
-use app\Models\reserves;
+use app\Models\Itinerary;
+use App\Models\Reserves;
 
 /**
  * @OA\Info(
@@ -239,67 +239,107 @@ class ApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/reserves/{id_user}",
-     *     tags={"Reserves"},
-     *     summary="Crea una reserva para un usuario con información de itinerarios",
-     *     description="Este endpoint crea una reserva de vuelo asociada a un usuario y guarda los itinerarios proporcionados.",
-     *     security={{"bearerAuth": {}}},
+     *     path="/reserves/{id_user}",
+     *     summary="Crear una nueva reserva",
+     *     description="Crea una nueva reserva con la información proporcionada y los itinerarios asociados.",
+     *     tags={"Reservas"},
      *     @OA\Parameter(
      *         name="id_user",
      *         in="path",
-     *         description="ID del usuario para el que se crea la reserva",
      *         required=true,
-     *         @OA\Schema(type="integer", example=123)
+     *         description="ID del usuario que realiza la reserva",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         description="Datos necesarios para crear la reserva y los itinerarios",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="locationName", type="string", example="Alfonso B. Aragon"),
-     *             @OA\Property(property="dateOfDeparture", type="string", format="date", example="2024-10-15"),
-     *             @OA\Property(property="timeOfDeparture", type="string", example="08:00"),
-     *             @OA\Property(
-     *                 property="itineraries",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="origin", type="string", example="MDE"),
-     *                     @OA\Property(property="destination", type="string", example="BOG"),
-     *                     @OA\Property(property="departure_date", type="string", format="date", example="2024-10-15"),
-     *                     @OA\Property(property="arrival_date", type="string", format="date", example="2024-10-15")
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"locationName", "dateOfDeparture", "timeOfDeparture", "itineraries"},
+     *                 @OA\Property(
+     *                     property="locationName",
+     *                     description="Nombre de la ubicación de la reserva",
+     *                     type="string",
+     *                     example="Eldorado"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="dateOfDeparture",
+     *                     description="Fecha de salida de la reserva",
+     *                     type="string",
+     *                     format="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="timeOfDeparture",
+     *                     description="Hora de salida de la reserva",
+     *                     type="string",
+     *                     example="10:00"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="itineraries",
+     *                     description="Lista de itinerarios asociados a la reserva",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         required={"origin", "destination", "departure_date", "arrival_date"},
+     *                         @OA\Property(
+     *                             property="origin",
+     *                             description="Lugar de origen del itinerario",
+     *                             type="string",
+     *                             example="MDE"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="destination",
+     *                             description="Destino del itinerario",
+     *                             type="string",
+     *                             example="CLO"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="departure_date",
+     *                             description="Fecha de salida del itinerario",
+     *                             type="string",
+     *                             format="date"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="arrival_date",
+     *                             description="Fecha de llegada del itinerario",
+     *                             type="string",
+     *                             format="date"
+     *                         )
+     *                     )
      *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Reserva y itinerarios creados correctamente",
+     *         description="Reserva creada con éxito",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Reservation and itineraries saved correctly.")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Error de validación",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
-     *                 property="errors",
-     *                 type="object",
-     *                 @OA\Property(property="locationId", type="array", @OA\Items(type="string", example="The locationName field is required.")),
-     *                 @OA\Property(property="itineraries.0.origin", type="array", @OA\Items(type="string", example="The origin field is required."))
+     *                 property="message",
+     *                 type="string",
+     *                 example="Reserva creada con éxito"
      *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response=500,
-     *         description="Error interno del servidor",
+     *         response=400,
+     *         description="Solicitud inválida",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Error creating reservation: [detalle del error]")
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Los datos de entrada son incorrectos"
+     *             )
      *         )
-     *     )
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
      * )
      */
-
 
     public function reserves(Request $request, $id_user)
     {
@@ -316,8 +356,8 @@ class ApiController extends Controller
         ]);
 
         // Crear la reserva
-        $reserve = reserves::create([
-            'id_user' => auth()->id(), // O el ID del usuario según tu lógica
+        $reserve = Reserves::create([
+            'id_user' => auth()->id(),
             'locationName' => $request->locationName,
             'dateOfDeparture' => $request->dateOfDeparture,
             'timeOfDeparture' => $request->timeOfDeparture,
@@ -333,5 +373,101 @@ class ApiController extends Controller
 
         // Responder con éxito
         return response()->json(['message' => 'Reserva creada con éxito'], 201);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/reserves",
+     *     summary="Obtener itinerarios de reservas del usuario actual",
+     *     description="Recupera todas las reservas del usuario autenticado junto con sus itinerarios asociados.",
+     *     tags={"Reservas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de reservas con itinerarios del usuario",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     description="ID de la reserva",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="locationName",
+     *                     description="Nombre de la ubicación de la reserva",
+     *                     type="string",
+     *                     example="Eldorado"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="dateOfDeparture",
+     *                     description="Fecha de salida de la reserva",
+     *                     type="string",
+     *                     format="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="timeOfDeparture",
+     *                     description="Hora de salida de la reserva",
+     *                     type="string",
+     *                     example="10:00"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="itineraries",
+     *                     description="Lista de itinerarios asociados a la reserva",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="origin",
+     *                             description="Lugar de origen del itinerario",
+     *                             type="string",
+     *                             example="MDE"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="destination",
+     *                             description="Destino del itinerario",
+     *                             type="string",
+     *                             example="CLO"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="departure_date",
+     *                             description="Fecha de salida del itinerario",
+     *                             type="string",
+     *                             format="date"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="arrival_date",
+     *                             description="Fecha de llegada del itinerario",
+     *                             type="string",
+     *                             format="date"
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado, el usuario no está autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="No autorizado"
+     *             )
+     *         )
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
+
+    public function get_Reserves_Itineraries()
+    {
+        // Obtener las reservas del usuario actual
+        $reserves = Reserves::where('id_user', auth()->id())->with('itineraries')->get();
+        // Retornar los itinerarios de las reservas
+        return response()->json($reserves);
     }
 }
